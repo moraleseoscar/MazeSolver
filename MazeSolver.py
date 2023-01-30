@@ -3,17 +3,17 @@ from collections import deque as queue
  
 start = [];
 end = [];
+dRow = [ -1, 0, 1, 0]
+dCol = [ 0, 1, 0, -1]
 
 def pixelate(input_file_path, output_file_path, pixel_size):
     threshold = 127
     red = True;
     image = Image.open(input_file_path)
-    print(image.size)
     image = image.resize(
         (image.size[0] // pixel_size, image.size[1] // pixel_size),
         Image.NEAREST
     )
-    print(image.size)
     image = image.convert("RGB")
     r,g,b = image.split()
     r = r.point(lambda x: 255 * (x > threshold))
@@ -39,11 +39,8 @@ def pixelate(input_file_path, output_file_path, pixel_size):
     )
     image.save(output_file_path)
 
-
-dRow = [ -1, 0, 1, 0]
-dCol = [ 0, 1, 0, -1]
  
-def isValid(vis, row, col):
+def isValid(vis, row, col, width, height, grid):
    
     if (row < 0 or col < 0 or row >= width or col >= height):
         return False
@@ -56,16 +53,9 @@ def isValid(vis, row, col):
 
     return True
 
-if __name__ == '__main__':
-    newta = 4;
-   #Crea la imagen y muestra el inicio
-    pixelate("InteligenciaArtificial\Lab 1\Turing.png", "InteligenciaArtificial\Lab 1\TuringConverted.png", newta);
-    #pixelate("InteligenciaArtificial\Lab 1\Lab1.bmp", "InteligenciaArtificial\Lab 1\Lab1Converted.png", newta);
-
-    print(start, end);
-    
+def BFS(path):
     # Cargar la imagen
-    img = Image.open("InteligenciaArtificial\Lab 1\TuringConverted.png")
+    img = Image.open(path)
     img = img.resize(
             (img.size[0] // newta, img.size[1] // newta),
             Image.NEAREST
@@ -93,27 +83,24 @@ if __name__ == '__main__':
 
         if (grid[y][x] == (0,255,0)):
             print('encontrado') 
-            dat = grid[x][y]
             finy, finx = y, x;
-            print(x,y, dat)
             break
  
         for i in range(4):
             adjx = x + dRow[i]
             adjy = y + dCol[i]
-            if (isValid(vis, adjx, adjy)):
+            if (isValid(vis, adjx, adjy, width, height, grid)):
                 if path[adjx][adjy]==[]:
                     path[adjx][adjy]=[x,y]
                 q.append((adjx, adjy))
+
                 # img.putpixel((adjx,adjy), (125,0,125))
                 vis[adjx][adjy] = True
 
 
     final = True;
-    completa = []
     while final:
         try: 
-            completa.append(path[finx][finy]);
             img.putpixel((finx,finy), (125,0,125))
             finx = path[finx][finy][0]
             finy = path[finx][finy][1]
@@ -122,4 +109,58 @@ if __name__ == '__main__':
 
     img.save("InteligenciaArtificial\Lab 1\Result.png")
 
+def DFS(path):
+    # Cargar la imagen
+    img = Image.open(path)
+    img = img.resize(
+            (img.size[0] // newta, img.size[1] // newta),
+            Image.NEAREST
+        )
+
+    pixel_data = list(img.getdata())
+
+    width, height = img.size
+    pixel_data = [pixel_data[i * width:(i + 1) * width] for i in range(height)]
+    grid = pixel_data
+
+    vis = [[ False for i in range(width)] for i in range(height)]
+    path = [[ [] for i in range(width)] for i in range(height)]
+
+    st = []
+    st.append([start[0][0], start[0][1]])
+    
+    while (len(st) > 0):
+        curr = st[len(st) - 1]
+        st.remove(st[len(st) - 1])
+        row = curr[0]
+        col = curr[1]
+ 
+        if (isValid(vis, row, col, width, height, grid) == False):
+            continue
+        
+        vis[row][col] = True
+ 
+        if (grid[col][row] == (0,255,0)):
+            print('encontrado')
+            break
+ 
+        img.putpixel((row,col), (125,0,125))
+
+        for i in range(4):
+            adjx = row + dRow[i]
+            adjy = col + dCol[i]
+            st.append([adjx, adjy])
+
+    img.save("InteligenciaArtificial\Lab 1\Result.png")
+
+if __name__ == '__main__':
+    newta = 4;
+   #Crea la imagen y muestra el inicio
+    #pixelate("InteligenciaArtificial\Lab 1\Turing.png", "InteligenciaArtificial\Lab 1\TuringConverted.png", newta);
+    pixelate("InteligenciaArtificial\Lab 1\Image1.bmp", "InteligenciaArtificial\Lab 1\Image1Converted.png", newta);
+    print(start)
+    # BFS("InteligenciaArtificial\Lab 1\Image1Converted.png");
+    DFS("InteligenciaArtificial\Lab 1\Image1Converted.png")
+    
+    
 
