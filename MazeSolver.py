@@ -39,7 +39,6 @@ def pixelate(input_file_path, output_file_path, pixel_size):
     )
     image.save(output_file_path)
 
- 
 def isValid(vis, row, col, width, height, grid):
    
     if (row < 0 or col < 0 or row >= width or col >= height):
@@ -97,7 +96,6 @@ def BFS(path):
                 # img.putpixel((adjx,adjy), (125,0,125))
                 vis[adjx][adjy] = True
 
-
     final = True;
     while final:
         try: 
@@ -107,6 +105,10 @@ def BFS(path):
         except:
             final = False;
 
+    img = img.resize(
+        (img.size[0] * newta, img.size[1] * newta),
+        Image.NEAREST
+    )
     img.save("InteligenciaArtificial\Lab 1\Result.png")
 
 def DFS(path):
@@ -151,16 +153,17 @@ def DFS(path):
             adjy = col + dCol[i]
             st.append([adjx, adjy])
 
+    img = img.resize(
+        (img.size[0] * newta, img.size[1] * newta),
+        Image.NEAREST
+    )
     img.save("InteligenciaArtificial\Lab 1\Result.png")
 
 if __name__ == '__main__':
     newta = 4;
    #Crea la imagen y muestra el inicio
-    #pixelate("InteligenciaArtificial\Lab 1\Turing.png", "InteligenciaArtificial\Lab 1\TuringConverted.png", newta);
-    pixelate("InteligenciaArtificial\Lab 1\Image1.bmp", "InteligenciaArtificial\Lab 1\Image1Converted.png", newta);
-    print(start)
-    # BFS("InteligenciaArtificial\Lab 1\Image1Converted.png");
-    DFS("InteligenciaArtificial\Lab 1\Image1Converted.png")
-    
-    
+    pixelate("InteligenciaArtificial\Lab 1\Turing.png", "InteligenciaArtificial\Lab 1\TuringConverted.png", newta);
+    #pixelate("InteligenciaArtificial\Lab 1\Image1.bmp", "InteligenciaArtificial\Lab 1\Image1Converted.png", newta);
 
+    #BFS("InteligenciaArtificial\Lab 1\TuringConverted.png");
+    DFS("InteligenciaArtificial\Lab 1\TuringConverted.png")
